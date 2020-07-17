@@ -29,20 +29,37 @@ def concat_ant (ant_path, front_path, rear_path, left_path, right_path):
     left_root = left_tree.getroot()
     right_root = right_tree.getroot()
     
-    size = _front_root.find("size")
-    new_width = int(size.find("width").text)*2
-    new_height = int(size.find("height").text)*2
+    size = front_root.find("size")
+    offset_width = int(size.find("width").text)
+    size.find("width").text = str(offset_width*2)
+    offset_height = int(size.find("height").text)
+    size.find("height").text = str(offset_height*2)
 
-    # for ob in rear_root.iter("object"):
-    #     "xmin" "ymin" "xmax" "ymax"
-    # print country.tag
+    
+    # print(ET.tostring(front_root))
 
+    for ob in rear_root.iter("object"):
+        bndbox = ob.find("bndbox")
+        bndbox.find("xmin").text = str(float(bndbox.find("xmin").text) + offset_width)
+        bndbox.find("xmax").text = str(float(bndbox.find("xmax").text) + offset_width)
+        front_root.append(ob)
+    
+    
+    for ob in left_root.iter("object"):
+        bndbox = ob.find("bndbox")
+        bndbox.find("ymin").text = str(float(bndbox.find("ymin").text) + offset_height)
+        bndbox.find("ymax").text = str(float(bndbox.find("ymax").text) + offset_height)
+        front_root.append(ob)
 
+    for ob in right_root.iter("object"):
+        bndbox = ob.find("bndbox")
+        bndbox.find("xmin").text = str(float(bndbox.find("xmin").text) + offset_width)
+        bndbox.find("xmax").text = str(float(bndbox.find("xmax").text) + offset_width)
+        bndbox.find("ymin").text = str(float(bndbox.find("ymin").text) + offset_height)
+        bndbox.find("ymax").text = str(float(bndbox.find("ymax").text) + offset_height)
+        front_root.append(ob)
 
-
-
-
-
+    # print(ET.tostring(front_root))
 
 db_path = "C:/Users/haminji/Documents/image_concat/GODTrain200618_SVM_case1_new/"
 img_path = db_path + "newJPEGImages/"
@@ -59,17 +76,14 @@ concat_imgs = []
 concat_ants = []
 
 check = 0
+#for i in range(1):
 for i in range(min(len(front_files), len(rear_files), len(left_files), len(right_files))):
     concat_imgs.append(concat_img(img_path, front_files[i], rear_files[i], left_files[i], right_files[i]))
     concat_ants.append(concat_ant(ant_path, front_files[i], rear_files[i], left_files[i], right_files[i]))
 
+#have to save as file
 
 
-
-
-
-img = cv2.imread(img_path+'tte_kor_20181105_s1_tte_svm_front_20170831_073633698892.mp4_00120.jpg')  
-  
 # Output img with window name as 'image' 
 cv2.imshow('image', concat_imgs[0])  
   
