@@ -86,8 +86,8 @@ for i in range(num):
 #save as file
 print(db_path+"out"+ant_path+"ant"+str(i)+".xml")
 for i in range(num):
-    cv2.imwrite(output_img_path+"img"+str(i)+".jpg", concat_imgs[i])
-    concat_ants[i].write(output_ant_path+"ant"+str(i)+".xml", encoding="utf-8")
+    cv2.imwrite(output_img_path+allfiles[i]+".jpg", concat_imgs[i])
+    concat_ants[i].write(output_ant_path+allfiles[i]+".xml", encoding="utf-8")
 
 # Output img with window name as 'image' 
 cv2.imshow('image', concat_imgs[0])  
