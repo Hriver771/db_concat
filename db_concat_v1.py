@@ -60,10 +60,13 @@ def concat_ant (ant_path, front_path, rear_path, left_path, right_path):
         front_root.append(ob)
 
     # print(ET.tostring(front_root))
+    return front_tree
 
 db_path = "C:/Users/haminji/Documents/image_concat/GODTrain200618_SVM_case1_new/"
 img_path = db_path + "newJPEGImages/"
 ant_path = db_path + "newAnnotations/"
+output_ant_path = db_path + "outAnnotations/"
+output_img_path = db_path + "outJPEGImages/"
 
 allfiles = [f.split(".jpg")[0] for f in listdir(img_path) if isfile(join(img_path, f))]
 
@@ -75,14 +78,16 @@ right_files = [f for f in allfiles if f.split("_")[6]=="right"]
 concat_imgs = []
 concat_ants = []
 
-check = 0
-#for i in range(1):
-for i in range(min(len(front_files), len(rear_files), len(left_files), len(right_files))):
+num = min(len(front_files), len(rear_files), len(left_files), len(right_files))
+for i in range(num):
     concat_imgs.append(concat_img(img_path, front_files[i], rear_files[i], left_files[i], right_files[i]))
     concat_ants.append(concat_ant(ant_path, front_files[i], rear_files[i], left_files[i], right_files[i]))
 
-#have to save as file
-
+#save as file
+print(db_path+"out"+ant_path+"ant"+str(i)+".xml")
+for i in range(num):
+    cv2.imwrite(output_img_path+"img"+str(i)+".jpg", concat_imgs[i])
+    concat_ants[i].write(output_ant_path+"ant"+str(i)+".xml", encoding="utf-8")
 
 # Output img with window name as 'image' 
 cv2.imshow('image', concat_imgs[0])  
